@@ -8,18 +8,19 @@ import { LoginUserRequest } from "../../../interfaces/user/LoginUserRequest"
 class LoginUserService{
 
     async execute ({email,password}: LoginUserRequest){
+
+        if(!email){
+            throw new Error ("Email necessário para login");
+        }
         
-        const normalizedEmail = email?.trim().toLowerCase();
-        if (!normalizedEmail){
-            throw new Error ("Email necessário para login")
-        }
         if(!password){
-            throw new Error ("Senha necessária para login")
+            throw new Error ("Senha necessária para login");
         }
+        const normalizedEmail = email?.trim().toLowerCase();
 
         const user = await prismaClient.user.findFirst({
             where:{
-                email:email
+                email:normalizedEmail
             }
         });
 
