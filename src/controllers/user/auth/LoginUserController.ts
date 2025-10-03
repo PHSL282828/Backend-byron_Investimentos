@@ -6,7 +6,7 @@ class LoginUserController {
 
 
     async handle(request:Request, response:Response){
-        const {email,password}:LoginUserRequest= request.body;
+        const {email,password}= request.body;
         const loginUserService= new LoginUserService();
         const loginRes=await loginUserService.execute({email,password})
         return response.json(loginRes)
