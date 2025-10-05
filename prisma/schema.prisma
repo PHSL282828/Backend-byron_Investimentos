@@ -32,29 +32,17 @@ model Investment{
   id String @id @default(uuid())
   name String
   investedValue Float
-  dateInvested String
+  quantity Int
+  dateInvested DateTime? @default(now())
   ticker String
   user_id String
   user User @relation(fields:[user_id], references:[id])
-  type_id String
-  type Type @relation(fields:[type_id], references: [id])
+
   
 
   created_at DateTime? @default(now())
   updated_at DateTime? @default(now())
 
   @@map("investments")
-
-}
-
-model Type{
-  id String @id @default(uuid())
-  name String
-
-  investment Investment[]
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  @@map("types")
 
 }
