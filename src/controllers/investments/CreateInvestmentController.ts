@@ -11,5 +11,7 @@ class CreateInvestmentController{
 
     }
 
+
 }
+export {CreateInvestmentController}
 
