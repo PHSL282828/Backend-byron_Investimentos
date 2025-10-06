@@ -4,14 +4,14 @@ import prismaClient from "../../prisma";
 
 type BrapiQuoteResponse = {
   results?: BrapiQuoteItem[];
-};
+};// resposta da api
 
 
 type BrapiQuoteItem = {
   symbol?: string;
   shortName?: string;
   regularMarketPrice?: number;
-};
+};// dado dentro da resposta da api
 
 class GetInvestmentService{
     private readonly token= process.env.BRAPI_TOKEN;
