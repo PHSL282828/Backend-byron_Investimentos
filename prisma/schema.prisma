@@ -46,3 +46,11 @@ model Investment{
   @@map("investments")
 
 }
+
+model TokenRevogado {//vamos precisar pra facilitar a implementação da blacklist de tokens
+  id        String   @id @default(cuid())
+  jti       String   @unique
+  exp       DateTime
+  createdAt DateTime @default(now())
+}
+
