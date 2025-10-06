@@ -16,6 +16,7 @@ router.get('/test', (request:Request, response:Response)=>{
 //rotas de usuário
 router.post("/user", new CreateUserController().handle);
 router.post("/user/login", new LoginUserController().handle);
+router.post("/user/logout",isAuthenticated, new LoginUserController().handle);
 
 //rotas de investimento
 router.post("/investments", isAuthenticated, new CreateInvestmentController().handle);

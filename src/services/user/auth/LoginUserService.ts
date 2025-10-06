@@ -2,6 +2,7 @@ import {compare} from "bcryptjs"
 import {sign} from "jsonwebtoken"
 import prismaClient from "../../../prisma/index"
 import { LoginUserRequest } from "../../../interfaces/user/LoginUserRequest"
+import { randomUUID } from "crypto";
 
 
 
@@ -37,7 +38,8 @@ class LoginUserService{
         process.env.JWT_SECRET as string,
         {
             subject:user.id,
-            expiresIn: "1d"
+            expiresIn: "1d",
+            jwtid: randomUUID(),//vamos precisar pra identificar os tokens
             //estamos mexendo com investimentos, então um tempo mais curto para o token
             //é mais apropriado
         }
