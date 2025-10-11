@@ -6,6 +6,8 @@ import { randomUUID } from "crypto";
 
 
 
+
+
 class LoginUserService{
 
     async execute ({email,password}: LoginUserRequest){
@@ -25,9 +27,13 @@ class LoginUserService{
             }
         });
 
+        if(!user){
+            throw new Error("Email ou senha incorretos");
+        }
+
         const passwordMatch = await compare(password, user.password);// compara a senha com a senha com hash
 
-        if(!user || !passwordMatch){
+        if(!passwordMatch){
             throw new Error("Email ou senha incorretos");
         }
 

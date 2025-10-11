@@ -2,6 +2,7 @@ import { verify, JwtPayload } from "jsonwebtoken";
 import prismaClient from "../../../prisma";
 
 
+
 type Decoded = JwtPayload & {
   sub: string;
   jti?: string;   // vem do jwtid (options do sign)
@@ -34,6 +35,7 @@ type Decoded = JwtPayload & {
                 //assim a data gravada é a da expiração real do token
                 update:{exp:new Date(exp*1000),}
             })
+
         } catch{
             return; //novamente, se deu erro não é um problema
         }
