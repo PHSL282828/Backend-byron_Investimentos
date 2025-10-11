@@ -1,29 +1,43 @@
-import {Request, Response, NextFunction} from "express"
-import { Payload } from "../services/user/auth/Payload"
-import {verify} from "jsonwebtoken"
+import { Request, Response, NextFunction } from "express";
+import { verify, JwtPayload } from "jsonwebtoken";
+import prismaClient from "../prisma";
 
-export function isAuthenticated(request:Request, response:Response, next:NextFunction){
+type Payload = JwtPayload & { sub: string; jti?: string };
 
-    //para criar um middleware primeiro precisamos verficar o token js do usuário
-    const authToken = request.headers.authorization;//atenção a header e headers
+export async function isAuthenticated(
+  request: Request,
+  response: Response,
+  next: NextFunction
+) {
+  const auth = request.headers.authorization;
 
-    if (!authToken){
-        return response.status(401).end;
+  if (!auth?.startsWith("Bearer ")) {
+    return response.status(401).end(); 
+  }
+
+  const token = auth.split(" ")[1];
+  if (!token) return response.status(401).end(); 
+
+  try {
+    const { sub, jti } = verify(token, process.env.JWT_SECRET as string) as Payload;
+
+    if (!jti) {
+      return response.status(401).end(); 
     }
 
-    const [, token]= authToken.split(" ") // coloca em token o authToken já formatado
+    const revogado = await prismaClient.tokenRevogado.findUnique({
+      where: { jti },
+      select: { id: true },
+    });
+  
 
-    try{
-        //verifica o token pelo verify, descriptografando a senha com o codigo no JWT_SECRET
-        const {sub} = verify(token,process.env.JWT_SECRET) as Payload;
-        request.user_id=sub
-        return next()
-    }catch (error){
-        return response.send(401).end()
+    if (revogado) {
+      return response.status(401).json({ error: "Token revogado" }); 
     }
 
+    request.user_id = sub;
+    return next();
+  } catch {
+    return response.status(401).end();          
+  }
 }
-
-
-
-

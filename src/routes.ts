@@ -7,6 +7,8 @@ import { GetInvestmentController } from "./controllers/investments/GetInvestment
 import { UpdateInvestmentController } from "./controllers/investments/UpdateInvestmentController";
 import { RemoveInvestmentController } from "./controllers/investments/RemoveInvestmentController";
 import { GetAllInvestmentsController } from "./controllers/investments/GetAllInvestmentsController";
+import { LogoutUserController } from "./controllers/user/auth/LogoutUserController";
+
 
 const router = Router();
 router.get('/test', (request:Request, response:Response)=>{
@@ -16,6 +18,7 @@ router.get('/test', (request:Request, response:Response)=>{
 //rotas de usuário
 router.post("/user", new CreateUserController().handle);
 router.post("/user/login", new LoginUserController().handle);
+router.post("/user/logout",isAuthenticated, new LogoutUserController().handle);
 
 //rotas de investimento
 router.post("/investments", isAuthenticated, new CreateInvestmentController().handle);

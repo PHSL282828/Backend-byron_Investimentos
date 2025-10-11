@@ -2,6 +2,9 @@ import {compare} from "bcryptjs"
 import {sign} from "jsonwebtoken"
 import prismaClient from "../../../prisma/index"
 import { LoginUserRequest } from "../../../interfaces/user/LoginUserRequest"
+import { randomUUID } from "crypto";
+
+
 
 
 
@@ -24,9 +27,13 @@ class LoginUserService{
             }
         });
 
+        if(!user){
+            throw new Error("Email ou senha incorretos");
+        }
+
         const passwordMatch = await compare(password, user.password);// compara a senha com a senha com hash
 
-        if(!user || !passwordMatch){
+        if(!passwordMatch){
             throw new Error("Email ou senha incorretos");
         }
 
@@ -37,7 +44,8 @@ class LoginUserService{
         process.env.JWT_SECRET as string,
         {
             subject:user.id,
-            expiresIn: "1d"
+            expiresIn: "1d",
+            jwtid: randomUUID(),//vamos precisar pra identificar os tokens
             //estamos mexendo com investimentos, então um tempo mais curto para o token
             //é mais apropriado
         }
