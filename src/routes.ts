@@ -22,9 +22,9 @@ router.post("/user/logout",isAuthenticated, new LogoutUserController().handle);
 
 //rotas de investimento
 router.post("/investments", isAuthenticated, new CreateInvestmentController().handle);
-router.get("/investments", isAuthenticated, new GetInvestmentController().handle);
-router.put("/investments", isAuthenticated, new UpdateInvestmentController().handle);
-router.delete("/investments", isAuthenticated, new RemoveInvestmentController().handle);
+router.get("/investments/get", isAuthenticated, new GetInvestmentController().handle);
+router.put("/investments/edit", isAuthenticated, new UpdateInvestmentController().handle);
+router.delete("/investments/remove", isAuthenticated, new RemoveInvestmentController().handle);
 router.get("/investments/all", isAuthenticated, new GetAllInvestmentsController().handle);
 
 export {router}
