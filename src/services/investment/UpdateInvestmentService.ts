@@ -57,8 +57,26 @@ class UpdateInvestmentService{
         let novoValorInvestido = valorMercado * updatedInvestment.quantity;
         updatedInvestment.investedValue=novoValorInvestido;
 
+        const newN= await prismaClient.investment.update({
+            where:{
+                id:updatedInvestment.id
+            },
+            data:{
+                investedValue:updatedInvestment.investedValue,
+                updated_at: new Date(),
+            },
+            select:{
+                id:true,
+                name:true,
+                ticker:true,
+                investedValue:true,
+                quantity:true,
+                user_id:true
+            }
+        })
 
-        return updatedInvestment;
+
+        return newN;
         
     }
 }
