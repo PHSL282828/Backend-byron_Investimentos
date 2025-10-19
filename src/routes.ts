@@ -8,6 +8,7 @@ import { UpdateInvestmentController } from "./controllers/investments/UpdateInve
 import { RemoveInvestmentController } from "./controllers/investments/RemoveInvestmentController";
 import { GetAllInvestmentsController } from "./controllers/investments/GetAllInvestmentsController";
 import { LogoutUserController } from "./controllers/user/auth/LogoutUserController";
+import { GetInvestmentsByUserController } from "./controllers/investments/GetInvestmentsByUserController";
 
 
 const router = Router();
@@ -22,6 +23,7 @@ router.post("/user/logout",isAuthenticated, new LogoutUserController().handle);
 
 //rotas de investimento
 router.post("/investments", isAuthenticated, new CreateInvestmentController().handle);
+router.get("/investments/user", isAuthenticated, new GetInvestmentsByUserController().handle)
 router.get("/investments/get", isAuthenticated, new GetInvestmentController().handle);
 router.put("/investments/edit", isAuthenticated, new UpdateInvestmentController().handle);
 router.delete("/investments/remove", isAuthenticated, new RemoveInvestmentController().handle);

@@ -1,4 +1,4 @@
-import { GetInvestmentRequest } from "../../interfaces/investments/GetInvesmentRequest";
+import { GetInvestmentsByUserRequest } from "../../interfaces/investments/GetInvestmentsByUserRequest";
 import prismaClient from "../../prisma";
 
 
@@ -13,21 +13,22 @@ type BrapiQuoteItem = {
   regularMarketPrice?: number;
 };// dado dentro da resposta da api
 
-class GetInvestmentService{
+class GetInvestmentsByUserService{
     private readonly token= process.env.BRAPI_TOKEN;
     private readonly brappiUrl=process.env.BRAPI_URL;
 
-    async execute({investment_id}:GetInvestmentRequest){
+    async execute({user_id}:GetInvestmentsByUserRequest){
 
-        if (!investment_id){
-            throw new Error("O id do investimento precisa ser enviado");
+        if (!user_id){
+            throw new Error("O id do usuário precisa ser enviada");
         }
-        const investment = await prismaClient.investment.findFirst({
+        const investments = await prismaClient.investment.findMany({
             where:{
-                id:investment_id
+                user_id:user_id//pega todos os investimentos de um dado usuário por id
             },
             select:{
                 id:true,
+                name:true,
                 ticker:true,
                 investedValue:true,
                 quantity:true,
@@ -36,7 +37,7 @@ class GetInvestmentService{
 
         });
 
-        if(!investment){
+        if(!investments){
             throw new Error("Investmento não encontrado")
         }
 
@@ -44,7 +45,9 @@ class GetInvestmentService{
       throw new Error("Token da brapi não configurado. Defina BRAPI_TOKEN no ambiente.");
         }
 
-        const url=new URL(`${this.brappiUrl}/quote/${encodeURIComponent(investment.ticker)}`);
+        for(let n of investments){
+
+            const url=new URL(`${this.brappiUrl}/quote/${encodeURIComponent(n.ticker)}`);
 
         url.searchParams.set("token", this.token);
 
@@ -65,35 +68,28 @@ class GetInvestmentService{
         const quote = data?.results?.[0];
 
         let valorMercado=Number(quote.regularMarketPrice);
-        let novoValorInvestido = valorMercado * investment.quantity;
-        investment.investedValue=novoValorInvestido;
+        console.log(valorMercado)
+        let novoValorInvestido = valorMercado * n.quantity;
+        n.investedValue=novoValorInvestido;
 
         const newN= await prismaClient.investment.update({
             where:{
-                id:investment.id
+                id:n.id
             },
             data:{
-                investedValue:investment.investedValue,
+                investedValue:novoValorInvestido,
                 updated_at: new Date(),
-            },
-            select:{
-                id:true,
-                name:true,
-                ticker:true,
-                investedValue:true,
-                quantity:true,
-                user_id:true
             }
         })
- 
 
-        
 
-        return newN;
+        }
+
+        return investments;
 
     }
 }
 
-export {GetInvestmentService}
+export {GetInvestmentsByUserService}
 
 
