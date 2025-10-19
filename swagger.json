@@ -223,7 +223,37 @@
                     }
                 }
             }
+        },
+         "/v1/investments/user?user_id{user_id}":{
+            "get":{
+                "description":"Retorna todos os investimentos de um usuário",
+                "security":[{
+                    "bearerAuth":[]
+                }],
+                "parameters":[{
+                    "name":"user_id",
+                    "In":"path",
+                    "description":"Id do usuário",
+                    "required":"true",
+                    "type":"string",
+                    "format":"uuid"
+            }],
+                "responses":{
+                    "200":{
+                        "content":{
+                            "application/json":{
+                                "schema":{
+                                    "$ref":"#/components/schemes/ResponseAllInvestments"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
         }
+
+        
+        
         
     },
     
